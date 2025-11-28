@@ -77,12 +77,14 @@ function AppContent() {
       >
         <div className="h-full w-full relative flex flex-col">
           {/* Map Container */}
-          <div className="flex-1 w-full h-full">
+          <div className="flex-1 w-full h-full relative z-0">
             <CityMap />
           </div>
           
-          {/* Dock inside container */}
-          <Dock isSnapped={dockSnapped} />
+          {/* Dock inside container - on top of map */}
+          <div className="absolute bottom-0 left-0 right-0 z-[1000] pointer-events-none">
+            <Dock isSnapped={dockSnapped} />
+          </div>
         </div>
       </ContainerScroll>
 

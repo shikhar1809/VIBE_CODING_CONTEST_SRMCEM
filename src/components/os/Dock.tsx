@@ -63,11 +63,9 @@ export function Dock({ isSnapped = false }: DockProps) {
 
   return (
     <motion.div
-      className={`w-full flex justify-center ${isSnapped ? 'absolute bottom-4' : 'relative mt-4'}`}
+      className="w-full flex justify-center z-[1000]"
       initial={false}
       animate={{
-        position: isSnapped ? 'absolute' : 'relative',
-        bottom: isSnapped ? 16 : 'auto',
         scale: isSnapped ? 1.1 : 1,
       }}
       transition={{
@@ -75,8 +73,11 @@ export function Dock({ isSnapped = false }: DockProps) {
         stiffness: 300,
         damping: 30,
       }}
+      style={{
+        pointerEvents: 'auto',
+      }}
     >
-      <div className="transform scale-125">
+      <div className="transform scale-125 relative z-[1000]">
         <MacOSDock
           apps={dockApps.map(app => ({
             id: app.id,
