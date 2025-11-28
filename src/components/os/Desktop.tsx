@@ -3,8 +3,8 @@ import { CityMap } from '../map/CityMap';
 
 export function Desktop() {
   return (
-    <div className="fixed inset-0 bg-gray-100" style={{ top: '80px', bottom: '120px' }}>
-      <CityMap />
+    <div className="h-full w-full">
+      {/* Desktop content is now handled in App.tsx with ContainerScroll */}
     </div>
   );
 }

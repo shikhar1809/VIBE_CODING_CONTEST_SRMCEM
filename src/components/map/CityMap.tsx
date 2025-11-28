@@ -156,13 +156,13 @@ export function CityMap() {
   }, []);
 
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-full relative rounded-lg overflow-hidden">
       {/* Next Report Button */}
       {sortedIssues.length > 0 && (
         <div className="absolute top-4 right-4 z-[1000]">
           <Button
             onClick={getNextReport}
-            className="neo-button bg-neo-cyan text-black font-bold"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-lg px-4 py-2"
           >
             <ChevronRight className="w-4 h-4 mr-2" />
             Next Report
@@ -173,7 +173,7 @@ export function CityMap() {
       <MapContainer
         center={selectedIssue ? [selectedIssue.latitude, selectedIssue.longitude] : LUCKNOW_CENTER}
         zoom={selectedIssue ? 15 : DEFAULT_ZOOM}
-        style={{ height: '100%', width: '100%' }}
+        style={{ height: '100%', width: '100%', borderRadius: '8px' }}
         zoomControl={true}
         key={selectedIssue ? `${selectedIssue.id}-${selectedIssue.latitude}` : 'default'}
       >

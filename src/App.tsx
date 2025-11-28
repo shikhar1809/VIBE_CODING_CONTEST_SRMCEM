@@ -7,6 +7,8 @@ import { AdminPanelWindow } from './components/admin/AdminPanelWindow';
 import { ReportIssueWindow } from './components/reporting/ReportIssueWindow';
 import { SettingsWindow } from './components/os/SettingsWindow';
 import { seedDemoData } from './lib/seed-demo-data';
+import { ContainerScroll } from './components/ui/container-scroll';
+import { CityMap } from './components/map/CityMap';
 
 function AppContent() {
   const { windows } = useWindows();
@@ -17,9 +19,37 @@ function AppContent() {
   }, []);
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-gray-100">
-      <Navbar1 />
-      <Desktop />
+    <div className="min-h-screen w-screen overflow-x-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+      {/* Container Scroll with Map and Navbar */}
+      <ContainerScroll
+        titleComponent={
+          <div className="text-center space-y-4">
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-2">
+              SynergyHub
+            </h1>
+            <p className="text-lg md:text-xl text-gray-300">
+              Smart City Management System
+            </p>
+            <p className="text-sm md:text-base text-gray-400">
+              Scroll to explore the interactive map
+            </p>
+          </div>
+        }
+      >
+        <div className="h-full w-full relative flex flex-col">
+          {/* Static Navbar inside container */}
+          <div className="absolute top-0 left-0 right-0 z-50">
+            <Navbar1 />
+          </div>
+          
+          {/* Map Container */}
+          <div className="flex-1 w-full h-full mt-16">
+            <CityMap />
+          </div>
+        </div>
+      </ContainerScroll>
+
+      {/* Dock - Always visible at bottom */}
       <Dock />
 
       {/* Render all open windows */}
