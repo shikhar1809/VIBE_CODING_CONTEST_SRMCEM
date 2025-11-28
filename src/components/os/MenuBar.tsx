@@ -1,4 +1,3 @@
-import React from 'react';
 
 export function MenuBar() {
   const currentTime = new Date().toLocaleTimeString('en-US', {

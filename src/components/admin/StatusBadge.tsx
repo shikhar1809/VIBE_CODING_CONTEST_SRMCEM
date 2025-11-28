@@ -1,5 +1,3 @@
-import React from 'react';
-import { Badge } from '../ui/badge';
 import { IssueStatus } from '../../types/issue';
 import { cn } from '../../lib/utils';
 

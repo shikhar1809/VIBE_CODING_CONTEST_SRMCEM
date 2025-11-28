@@ -1,4 +1,3 @@
-import React from 'react';
 import { Marker, Popup } from 'react-leaflet';
 import { Issue, categoryEmojis } from '../../types/issue';
 import L from 'leaflet';

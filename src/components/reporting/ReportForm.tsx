@@ -29,7 +29,6 @@ export function ReportForm({ defaultLat, defaultLng, onSuccess, onCancel, onLoca
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedAuthorities, setSelectedAuthorities] = useState<string[]>([]);
-  const [isSelectingLocation, setIsSelectingLocation] = useState(false);
 
   const { transcript, isListening, startListening, stopListening, error: speechError } = useSpeechRecognition();
 

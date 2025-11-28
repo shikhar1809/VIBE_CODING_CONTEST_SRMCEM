@@ -1,4 +1,3 @@
-import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Issue, categoryEmojis, categoryLabels } from '../../types/issue';
 import { StatusBadge } from './StatusBadge';
@@ -18,7 +17,6 @@ export function IssueDetails({
   open,
   onClose,
   onStatusChange,
-  onAssign,
   onDelete,
 }: IssueDetailsProps) {
   if (!issue) return null;

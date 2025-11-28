@@ -1,5 +1,3 @@
-import React from 'react';
-import { CityMap } from '../map/CityMap';
 
 export function Desktop() {
   return (

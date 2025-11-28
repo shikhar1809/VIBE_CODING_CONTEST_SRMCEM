@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Window } from '../os/Window';
 import { ReportForm } from './ReportForm';
 import { useWindows } from '../../contexts/WindowContext';

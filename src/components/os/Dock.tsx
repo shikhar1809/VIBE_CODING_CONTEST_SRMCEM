@@ -1,5 +1,4 @@
-import React from 'react';
-import { Settings, FileText, Shield } from 'lucide-react';
+import { useMemo } from 'react';
 import { useWindows } from '../../contexts/WindowContext';
 import MacOSDock from '../ui/mac-os-dock';
 import { WindowApp } from '../../types/window';
@@ -14,11 +13,10 @@ export function Dock({ isSnapped = false }: DockProps) {
   const { windows, openWindow } = useWindows();
 
   // Get list of open app IDs
-  const openApps = React.useMemo(() => {
+  const openApps = useMemo(() => {
     return windows
-      .filter(w => !w.minimized)
-      .map(w => w.app)
-      .filter((app): app is string => app !== null);
+      .filter(w => !w.minimized && w.app !== null)
+      .map(w => w.app as string);
   }, [windows]);
 
   const handleAppClick = (appId: string) => {
@@ -35,6 +33,7 @@ export function Dock({ isSnapped = false }: DockProps) {
   };
 
   const getAppTitle = (app: WindowApp): string => {
+    if (!app) return 'App';
     const titles: Record<string, string> = {
       'admin': 'Admin Panel',
       'report': 'Report Issue',
@@ -43,7 +42,7 @@ export function Dock({ isSnapped = false }: DockProps) {
     return titles[app] || 'App';
   };
 
-  const dockApps = React.useMemo(() => [
+  const dockApps = useMemo(() => [
     {
       id: 'admin',
       name: 'Admin Panel',
@@ -82,7 +81,7 @@ export function Dock({ isSnapped = false }: DockProps) {
           apps={dockApps.map(app => ({
             id: app.id,
             name: app.name,
-            icon: typeof app.icon === 'function' ? app.icon(80) : app.icon,
+            icon: app.icon,
           }))}
           onAppClick={handleAppClick}
           openApps={openApps}

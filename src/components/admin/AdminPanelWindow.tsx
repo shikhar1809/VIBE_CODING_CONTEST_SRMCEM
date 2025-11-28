@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Window } from '../os/Window';
 import { IssuesTable } from './IssuesTable';
 import { useIssues } from '../../hooks/useIssues';
@@ -16,29 +16,27 @@ const LOADING_MESSAGES = [
 export function AdminPanelWindow() {
   const { windows } = useWindows();
   const windowState = windows.find(w => w.id === 'admin');
-  const { issues, loading, error, refetchIssues } = useIssues();
+  const { issues, loading, error, refetch } = useIssues();
   const [loadingMessage, setLoadingMessage] = useState(LOADING_MESSAGES[0]);
-  const [loadingStep, setLoadingStep] = useState(0);
 
   // Cycle through loading messages
   useEffect(() => {
     if (loading) {
       const interval = setInterval(() => {
-        setLoadingStep((prev) => {
-          const next = (prev + 1) % LOADING_MESSAGES.length;
-          setLoadingMessage(LOADING_MESSAGES[next]);
-          return next;
+        setLoadingMessage((prev) => {
+          const currentIndex = LOADING_MESSAGES.indexOf(prev);
+          const next = (currentIndex + 1) % LOADING_MESSAGES.length;
+          return LOADING_MESSAGES[next];
         });
       }, 800); // Change message every 800ms
 
       return () => clearInterval(interval);
     } else {
-      setLoadingStep(0);
       setLoadingMessage(LOADING_MESSAGES[0]);
     }
   }, [loading]);
 
-  if (!windowState || !windowState.isOpen) return null;
+  if (!windowState) return null;
 
   return (
     <Window id="admin" title="Admin Panel" defaultWidth={1200} defaultHeight={800} defaultX={50} defaultY={50}>
@@ -79,9 +77,9 @@ export function AdminPanelWindow() {
               <div className="flex items-center justify-center h-full">
                 <div className="text-center p-6 bg-red-50 rounded-lg border border-red-200">
                   <p className="text-red-600 font-medium">Error loading issues</p>
-                  <p className="text-sm text-red-500 mt-2">{error}</p>
+                  <p className="text-sm text-red-500 mt-2">{error.message}</p>
                   <button
-                    onClick={() => refetchIssues()}
+                    onClick={() => refetch()}
                     className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                   >
                     Retry
@@ -97,7 +95,7 @@ export function AdminPanelWindow() {
               </div>
             ) : (
               <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-gray-200 shadow-sm">
-                <IssuesTable issues={issues} onIssueClick={() => {}} onUpdateIssue={refetchIssues} />
+                <IssuesTable issues={issues} onIssueClick={() => {}} />
               </div>
             )}
           </TabsContent>

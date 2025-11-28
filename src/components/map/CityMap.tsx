@@ -1,20 +1,19 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { MapContainer, TileLayer, useMap, ZoomControl } from 'react-leaflet';
 import { IssueMarker } from './IssueMarker';
 import { useIssues } from '../../hooks/useIssues';
-import { Issue } from '../../types/issue';
 import { Button } from '../ui/button';
 import { ChevronRight } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 
 // Fix for default marker icons in react-leaflet
 import L from 'leaflet';
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import iconUrl from 'leaflet/dist/images/marker-icon.png';
+import iconShadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
 const DefaultIcon = L.icon({
-  iconUrl: icon,
-  shadowUrl: iconShadow,
+  iconUrl: iconUrl,
+  shadowUrl: iconShadowUrl,
   iconSize: [25, 41],
   iconAnchor: [12, 41],
 });

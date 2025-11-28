@@ -1,5 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { X, Minus, Square } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
 import { useWindows } from '../../contexts/WindowContext';
 import { cn } from '../../lib/utils';
 
@@ -37,8 +36,8 @@ export function Window({
     }
   }, [id, windowState, defaultX, defaultY, defaultWidth, defaultHeight, updateWindowPosition, updateWindowSize]);
 
-  if (!windowState || !windowState.isOpen) return null;
-  if (windowState.isMinimized) return null;
+  if (!windowState) return null;
+  if (windowState.minimized) return null;
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (windowRef.current && e.target === windowRef.current.querySelector('.window-header')) {
@@ -107,7 +106,7 @@ export function Window({
     focusWindow(id);
   };
 
-  const style = windowState.isMaximized
+  const style = windowState.maximized
     ? {
         top: 0,
         left: 0,
@@ -130,8 +129,8 @@ export function Window({
       className={cn(
         "absolute flex flex-col bg-white rounded-lg shadow-2xl overflow-hidden",
         "backdrop-blur-xl bg-white/90 border border-gray-200/50",
-        windowState.isMaximized ? "rounded-none" : "rounded-xl",
-        windowState.isMinimized && "hidden"
+        windowState.maximized ? "rounded-none" : "rounded-xl",
+        windowState.minimized && "hidden"
       )}
       style={{
         ...style,
@@ -172,7 +171,7 @@ export function Window({
       </div>
       
       {/* Resize handles */}
-      {!windowState.isMaximized && (
+      {!windowState.maximized && (
         <>
           <div
             className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize bg-transparent hover:bg-blue-500/20"

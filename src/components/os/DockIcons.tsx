@@ -1,4 +1,3 @@
-import React from 'react';
 import { Settings, FileText, Shield } from 'lucide-react';
 
 interface DockIconProps {

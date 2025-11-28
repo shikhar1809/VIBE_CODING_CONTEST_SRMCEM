@@ -1,8 +1,6 @@
-import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Issue, categoryEmojis, categoryLabels } from '../../types/issue';
 import { StatusBadge } from './StatusBadge';
-import { Badge } from '../ui/badge';
 
 interface IssuesTableProps {
   issues: Issue[];
