@@ -10,6 +10,7 @@ import { ContainerScroll } from './components/ui/container-scroll';
 import { CityMap } from './components/map/CityMap';
 import Background from './components/ui/Background';
 import BlurText from './components/ui/BlurText';
+import TextType from './components/ui/TextType';
 
 function AppContent() {
   const { windows } = useWindows();
@@ -65,9 +66,15 @@ function AppContent() {
               direction="top"
               className="text-4xl md:text-6xl font-bold text-white mb-2"
             />
-            <p className="text-lg md:text-xl text-gray-300">
-              Smart City Management System
-            </p>
+            <div className="text-lg md:text-xl text-gray-300 min-h-[2rem]">
+              <TextType
+                text={["Smart City Management System", "Real-time Issue Tracking", "Citizen Engagement Platform"]}
+                typingSpeed={75}
+                pauseDuration={1500}
+                showCursor={true}
+                cursorCharacter="|"
+              />
+            </div>
             <p className="text-sm md:text-base text-gray-400">
               Scroll to explore the interactive map
             </p>
