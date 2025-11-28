@@ -9,6 +9,7 @@ import { seedDemoData } from './lib/seed-demo-data';
 import { ContainerScroll } from './components/ui/container-scroll';
 import { CityMap } from './components/map/CityMap';
 import Background from './components/ui/Background';
+import BlurText from './components/ui/BlurText';
 
 function AppContent() {
   const { windows } = useWindows();
@@ -57,9 +58,13 @@ function AppContent() {
       <ContainerScroll
         titleComponent={
           <div className="text-center space-y-4">
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-2">
-              Experience SynergyHub
-            </h1>
+            <BlurText
+              text="Experience SynergyHub"
+              delay={150}
+              animateBy="words"
+              direction="top"
+              className="text-4xl md:text-6xl font-bold text-white mb-2"
+            />
             <p className="text-lg md:text-xl text-gray-300">
               Smart City Management System
             </p>
