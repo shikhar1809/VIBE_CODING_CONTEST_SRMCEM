@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { WindowProvider, useWindows } from './contexts/WindowContext';
 import { Navbar1 } from './components/os/Navbar1';
 import { Dock } from './components/os/Dock';
@@ -11,18 +11,45 @@ import { CityMap } from './components/map/CityMap';
 
 function AppContent() {
   const { windows } = useWindows();
+  const [dockSnapped, setDockSnapped] = useState(false);
 
   useEffect(() => {
     // Seed demo data on mount
     seedDemoData().catch(console.error);
   }, []);
 
+  // Listen for interactions that should snap the dock
+  useEffect(() => {
+    const handleInteraction = () => {
+      setDockSnapped(true);
+    };
+
+    // Listen for clicks, touches, and window opens
+    document.addEventListener('click', handleInteraction);
+    document.addEventListener('touchstart', handleInteraction);
+    
+    // Listen for window opens
+    const checkWindows = () => {
+      if (windows.length > 0) {
+        setDockSnapped(true);
+      }
+    };
+    
+    const interval = setInterval(checkWindows, 100);
+
+    return () => {
+      document.removeEventListener('click', handleInteraction);
+      document.removeEventListener('touchstart', handleInteraction);
+      clearInterval(interval);
+    };
+  }, [windows]);
+
   return (
     <div className="min-h-screen w-screen overflow-x-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       {/* Fixed Navbar at top */}
       <Navbar1 />
 
-      {/* Container Scroll with Map */}
+      {/* Container Scroll with Map and Dock */}
       <ContainerScroll
         titleComponent={
           <div className="text-center space-y-4">
@@ -37,17 +64,18 @@ function AppContent() {
             </p>
           </div>
         }
+        dockSnapped={dockSnapped}
       >
         <div className="h-full w-full relative flex flex-col">
           {/* Map Container */}
           <div className="flex-1 w-full h-full">
             <CityMap />
           </div>
+          
+          {/* Dock inside container */}
+          <Dock isSnapped={dockSnapped} />
         </div>
       </ContainerScroll>
-
-      {/* Dock - Always visible at bottom */}
-      <Dock />
 
       {/* Render all open windows */}
       {windows.map((window) => {

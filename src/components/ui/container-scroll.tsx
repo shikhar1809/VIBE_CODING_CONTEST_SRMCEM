@@ -6,9 +6,11 @@ import { useScroll, useTransform, motion, MotionValue } from "framer-motion";
 export const ContainerScroll = ({
   titleComponent,
   children,
+  dockSnapped = false,
 }: {
   titleComponent: string | React.ReactNode;
   children: React.ReactNode;
+  dockSnapped?: boolean;
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({

@@ -1,20 +1,20 @@
-import React, { useMemo } from 'react';
+import React from 'react';
+import { Settings, FileText, Shield } from 'lucide-react';
 import { useWindows } from '../../contexts/WindowContext';
 import MacOSDock from '../ui/mac-os-dock';
 import { WindowApp } from '../../types/window';
 import { AdminIcon, ReportIcon, SettingsIcon } from './DockIcons';
+import { motion } from 'framer-motion';
 
-interface DockApp {
-  id: string;
-  name: string;
-  icon: string | React.ReactNode;
+interface DockProps {
+  isSnapped?: boolean;
 }
 
-export function Dock() {
+export function Dock({ isSnapped = false }: DockProps) {
   const { windows, openWindow } = useWindows();
 
   // Get list of open app IDs
-  const openApps = useMemo(() => {
+  const openApps = React.useMemo(() => {
     return windows
       .filter(w => !w.minimized)
       .map(w => w.app)
@@ -43,31 +43,50 @@ export function Dock() {
     return titles[app] || 'App';
   };
 
-  const dockApps: DockApp[] = useMemo(() => [
+  const dockApps = React.useMemo(() => [
     {
       id: 'admin',
       name: 'Admin Panel',
-      icon: <AdminIcon size={64} />,
+      icon: <AdminIcon size={80} />,
     },
     {
       id: 'report',
       name: 'Report Issue',
-      icon: <ReportIcon size={64} />,
+      icon: <ReportIcon size={80} />,
     },
     {
       id: 'settings',
       name: 'Settings',
-      icon: <SettingsIcon size={64} />,
+      icon: <SettingsIcon size={80} />,
     },
   ], []);
 
   return (
-    <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 flex justify-center">
-      <MacOSDock
-        apps={dockApps}
-        onAppClick={handleAppClick}
-        openApps={openApps}
-      />
-    </div>
+    <motion.div
+      className={`w-full flex justify-center ${isSnapped ? 'absolute bottom-4' : 'relative mt-4'}`}
+      initial={false}
+      animate={{
+        position: isSnapped ? 'absolute' : 'relative',
+        bottom: isSnapped ? 16 : 'auto',
+        scale: isSnapped ? 1.1 : 1,
+      }}
+      transition={{
+        type: 'spring',
+        stiffness: 300,
+        damping: 30,
+      }}
+    >
+      <div className="transform scale-125">
+        <MacOSDock
+          apps={dockApps.map(app => ({
+            id: app.id,
+            name: app.name,
+            icon: typeof app.icon === 'function' ? app.icon(80) : app.icon,
+          }))}
+          onAppClick={handleAppClick}
+          openApps={openApps}
+        />
+      </div>
+    </motion.div>
   );
 }
