@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { WindowProvider, useWindows } from './contexts/WindowContext';
 import { Navbar1 } from './components/os/Navbar1';
 import { Dock } from './components/os/Dock';
-import { Desktop } from './components/os/Desktop';
 import { AdminPanelWindow } from './components/admin/AdminPanelWindow';
 import { ReportIssueWindow } from './components/reporting/ReportIssueWindow';
 import { SettingsWindow } from './components/os/SettingsWindow';
@@ -20,12 +19,15 @@ function AppContent() {
 
   return (
     <div className="min-h-screen w-screen overflow-x-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-      {/* Container Scroll with Map and Navbar */}
+      {/* Fixed Navbar at top */}
+      <Navbar1 />
+
+      {/* Container Scroll with Map */}
       <ContainerScroll
         titleComponent={
           <div className="text-center space-y-4">
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-2">
-              SynergyHub
+              Experience SynergyHub
             </h1>
             <p className="text-lg md:text-xl text-gray-300">
               Smart City Management System
@@ -37,13 +39,8 @@ function AppContent() {
         }
       >
         <div className="h-full w-full relative flex flex-col">
-          {/* Static Navbar inside container */}
-          <div className="absolute top-0 left-0 right-0 z-50">
-            <Navbar1 />
-          </div>
-          
           {/* Map Container */}
-          <div className="flex-1 w-full h-full mt-16">
+          <div className="flex-1 w-full h-full">
             <CityMap />
           </div>
         </div>
