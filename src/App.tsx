@@ -8,6 +8,7 @@ import { SettingsWindow } from './components/os/SettingsWindow';
 import { seedDemoData } from './lib/seed-demo-data';
 import { ContainerScroll } from './components/ui/container-scroll';
 import { CityMap } from './components/map/CityMap';
+import Background from './components/ui/Background';
 
 function AppContent() {
   const { windows } = useWindows();
@@ -45,7 +46,10 @@ function AppContent() {
   }, [windows]);
 
   return (
-    <div className="min-h-screen w-screen overflow-x-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+    <div className="min-h-screen w-screen overflow-x-hidden relative">
+      {/* Background */}
+      <Background />
+      
       {/* Fixed Navbar at top */}
       <Navbar1 />
 
