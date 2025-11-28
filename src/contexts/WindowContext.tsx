@@ -19,14 +19,26 @@ export function WindowProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    // Calculate initial position to avoid overlap
+    const offset = 50;
+    const defaultWidth = 800;
+    const defaultHeight = 600;
+    
+    // Safely get window dimensions
+    const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
+    const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 1080;
+    
+    const initialX = Math.min(100 + windows.length * offset, viewportWidth - defaultWidth - 20);
+    const initialY = Math.min(100 + windows.length * offset, viewportHeight - defaultHeight - 20);
+    
     const newWindow: WindowState = {
       id: `window-${windowIdCounter++}`,
       app,
       title,
-      x: 100 + windows.length * 30,
-      y: 100 + windows.length * 30,
-      width: 800,
-      height: 600,
+      x: Math.max(20, initialX),
+      y: Math.max(20, initialY),
+      width: defaultWidth,
+      height: defaultHeight,
       minimized: false,
       maximized: false,
       zIndex: nextZIndex++,

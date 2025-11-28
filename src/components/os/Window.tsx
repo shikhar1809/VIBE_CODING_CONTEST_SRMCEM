@@ -55,8 +55,13 @@ export function Window({
       let newX = e.clientX - dragOffset.x;
       let newY = e.clientY - dragOffset.y;
 
-      newX = Math.max(0, Math.min(newX, window.innerWidth - windowState.width));
-      newY = Math.max(0, Math.min(newY, window.innerHeight - windowState.height));
+      // Constrain to viewport with padding
+      const padding = 20;
+      const maxX = window.innerWidth - windowState.width - padding;
+      const maxY = window.innerHeight - windowState.height - padding;
+      
+      newX = Math.max(padding, Math.min(newX, maxX));
+      newY = Math.max(padding, Math.min(newY, maxY));
 
       updateWindowPosition(id, newX, newY);
     } else if (isResizing) {
@@ -78,8 +83,12 @@ export function Window({
           break;
       }
 
-      newWidth = Math.max(300, newWidth);
-      newHeight = Math.max(200, newHeight);
+      // Constrain resize to viewport
+      const maxWidth = window.innerWidth - x - 20;
+      const maxHeight = window.innerHeight - y - 20;
+      
+      newWidth = Math.max(300, Math.min(newWidth, maxWidth));
+      newHeight = Math.max(200, Math.min(newHeight, maxHeight));
 
       updateWindowSize(id, newWidth, newHeight);
     }
@@ -111,7 +120,7 @@ export function Window({
         top: 0,
         left: 0,
         width: '100vw',
-        height: 'calc(100vh - 4rem)',
+        height: '100vh',
         transform: 'none',
         zIndex: windowState.zIndex,
       }
@@ -127,7 +136,7 @@ export function Window({
     <div
       ref={windowRef}
       className={cn(
-        "absolute flex flex-col bg-white rounded-lg shadow-2xl overflow-hidden",
+        "fixed flex flex-col bg-white rounded-lg shadow-2xl overflow-hidden",
         "backdrop-blur-xl bg-white/90 border border-gray-200/50",
         windowState.maximized ? "rounded-none" : "rounded-xl",
         windowState.minimized && "hidden"
@@ -135,8 +144,14 @@ export function Window({
       style={{
         ...style,
         transition: isDragging || isResizing ? 'none' : 'all 0.2s ease-out',
+        maxWidth: windowState.maximized ? '100vw' : `${window.innerWidth - 40}px`,
+        maxHeight: windowState.maximized ? '100vh' : `${window.innerHeight - 40}px`,
       }}
       onMouseDown={() => focusWindow(id)}
+      onClick={(e) => {
+        e.stopPropagation();
+        focusWindow(id);
+      }}
     >
       {/* macOS-style title bar */}
       <div
@@ -166,7 +181,7 @@ export function Window({
       </div>
       
       {/* Window content */}
-      <div className="flex-grow overflow-auto bg-white/95 backdrop-blur-sm">
+      <div className="flex-grow overflow-auto bg-white/95 backdrop-blur-sm pointer-events-auto">
         {children}
       </div>
       

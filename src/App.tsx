@@ -134,19 +134,21 @@ function AppContent() {
           </div>
         </div>
 
-        {/* Render all open windows */}
-        {windows.map((window) => {
-          if (window.app === 'admin') {
-            return <AdminPanelWindow key={window.id} />;
-          }
-          if (window.app === 'report') {
-            return <ReportIssueWindow key={window.id} windowId={window.id} />;
-          }
-          if (window.app === 'settings') {
-            return <SettingsWindow key={window.id} windowId={window.id} />;
-          }
-          return null;
-        })}
+        {/* Render all open windows in a fixed container */}
+        <div className="fixed inset-0 pointer-events-none z-[9999]">
+          {windows.map((window) => {
+            if (window.app === 'admin') {
+              return <AdminPanelWindow key={window.id} />;
+            }
+            if (window.app === 'report') {
+              return <ReportIssueWindow key={window.id} windowId={window.id} />;
+            }
+            if (window.app === 'settings') {
+              return <SettingsWindow key={window.id} windowId={window.id} />;
+            }
+            return null;
+          })}
+        </div>
       </div>
     </ClickSpark>
   );
