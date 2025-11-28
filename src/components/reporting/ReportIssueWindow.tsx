@@ -42,7 +42,7 @@ export function ReportIssueWindow({ windowId, defaultLat, defaultLng }: ReportIs
 
   return (
     <Window id={windowId} title="Report Issue" defaultWidth={900} defaultHeight={700}>
-      <div className="h-full flex flex-col">
+      <div className="h-full flex flex-col bg-gradient-to-br from-gray-50 to-white">
         {showMap ? (
           <div className="flex-1 relative">
             <div className="absolute top-2 right-2 z-[1000] bg-white neo-border-thick p-2">

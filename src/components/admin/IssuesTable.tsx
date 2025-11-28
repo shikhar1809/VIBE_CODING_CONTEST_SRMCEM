@@ -20,15 +20,15 @@ export function IssuesTable({ issues, onIssueClick }: IssuesTableProps) {
             <TableHead className="font-bold text-black">Status</TableHead>
             <TableHead className="font-bold text-black">Priority</TableHead>
             <TableHead className="font-bold text-black">Location</TableHead>
-            <TableHead className="font-bold text-black">Authorities</TableHead>
-            <TableHead className="font-bold text-black">Reported</TableHead>
+            <TableHead className="font-semibold text-gray-700">Authorities</TableHead>
+            <TableHead className="font-semibold text-gray-700">Reported</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {issues.map((issue) => (
             <TableRow
               key={issue.id}
-              className="neo-border-thick cursor-pointer hover:bg-gray-100"
+              className="border-b border-gray-100 cursor-pointer hover:bg-blue-50/50 transition-colors"
               onClick={() => onIssueClick?.(issue)}
             >
               <TableCell>
@@ -42,11 +42,15 @@ export function IssuesTable({ issues, onIssueClick }: IssuesTableProps) {
                 <StatusBadge status={issue.status} />
               </TableCell>
               <TableCell>
-                <span className="neo-border-thick bg-neo-orange px-2 py-1 text-xs font-bold text-black">
+                <span className={`px-2 py-1 text-xs font-semibold rounded-md ${
+                  issue.priority === 'high' ? 'bg-red-100 text-red-700' :
+                  issue.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                  'bg-green-100 text-green-700'
+                }`}>
                   {issue.priority.toUpperCase()}
                 </span>
               </TableCell>
-              <TableCell className="text-sm">
+              <TableCell className="text-sm text-gray-600">
                 {issue.latitude.toFixed(4)}, {issue.longitude.toFixed(4)}
               </TableCell>
               <TableCell>
@@ -55,13 +59,13 @@ export function IssuesTable({ issues, onIssueClick }: IssuesTableProps) {
                     {issue.authorities.slice(0, 2).map((auth, idx) => (
                       <span
                         key={idx}
-                        className="neo-border-thick bg-neo-yellow px-2 py-1 text-xs font-bold text-black"
+                        className="bg-blue-100 text-blue-700 px-2 py-1 text-xs font-medium rounded-md"
                       >
                         {auth.split(' ')[0]}
                       </span>
                     ))}
                     {issue.authorities.length > 2 && (
-                      <span className="text-xs font-bold text-gray-600">
+                      <span className="text-xs font-medium text-gray-500">
                         +{issue.authorities.length - 2}
                       </span>
                     )}

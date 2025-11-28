@@ -147,9 +147,9 @@ export function ReportForm({ defaultLat, defaultLng, onSuccess, onCancel, onLoca
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 space-y-4">
+    <form onSubmit={handleSubmit} className="p-6 space-y-4 bg-white/95 backdrop-blur-sm">
       {error && (
-        <div className="neo-border-thick bg-red-500 text-white p-3 font-bold">
+        <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg font-medium">
           {error}
         </div>
       )}
@@ -161,13 +161,13 @@ export function ReportForm({ defaultLat, defaultLng, onSuccess, onCancel, onLoca
       )}
 
       {/* Voice Recording Section */}
-      <div className="neo-card p-4 space-y-3">
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 space-y-3 shadow-sm">
         <div className="flex items-center justify-between">
-          <label className="font-bold text-black">Voice Report</label>
+          <label className="font-semibold text-gray-700">Voice Report</label>
           <Button
             type="button"
             onClick={isListening ? stopListening : startListening}
-            className={`neo-button ${isListening ? 'bg-red-500' : 'bg-neo-cyan'} text-white`}
+            className={`${isListening ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'} text-white rounded-lg shadow-sm transition-all`}
           >
             {isListening ? (
               <>
@@ -189,16 +189,16 @@ export function ReportForm({ defaultLat, defaultLng, onSuccess, onCancel, onLoca
           </div>
         )}
         {transcript && (
-          <div className="neo-border-thick bg-gray-50 p-3">
+          <div className="bg-white border border-gray-200 rounded-md p-3 shadow-sm">
             <p className="text-sm text-gray-700">{transcript}</p>
           </div>
         )}
       </div>
 
       <div className="space-y-2">
-        <label className="font-bold text-black">Category *</label>
+        <label className="font-semibold text-gray-700">Category *</label>
         <Select value={category} onValueChange={(value) => setCategory(value as IssueCategory)}>
-          <SelectTrigger className="neo-border-thick">
+          <SelectTrigger className="bg-white border-gray-200 rounded-lg shadow-sm">
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent>
@@ -212,9 +212,9 @@ export function ReportForm({ defaultLat, defaultLng, onSuccess, onCancel, onLoca
       </div>
 
       <div className="space-y-2">
-        <label className="font-bold text-black">Title *</label>
+        <label className="font-semibold text-gray-700">Title *</label>
         <Input
-          className="neo-border-thick"
+          className="bg-white border-gray-200 rounded-lg shadow-sm"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Brief description of the issue"
@@ -223,9 +223,9 @@ export function ReportForm({ defaultLat, defaultLng, onSuccess, onCancel, onLoca
       </div>
 
       <div className="space-y-2">
-        <label className="font-bold text-black">Description *</label>
+        <label className="font-semibold text-gray-700">Description *</label>
         <Textarea
-          className="neo-border-thick"
+          className="bg-white border-gray-200 rounded-lg shadow-sm"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Detailed description of the issue"
@@ -235,9 +235,9 @@ export function ReportForm({ defaultLat, defaultLng, onSuccess, onCancel, onLoca
       </div>
 
       <div className="space-y-2">
-        <label className="font-bold text-black">Priority</label>
+        <label className="font-semibold text-gray-700">Priority</label>
         <Select value={priority} onValueChange={(value) => setPriority(value as IssuePriority)}>
-          <SelectTrigger className="neo-border-thick">
+          <SelectTrigger className="bg-white border-gray-200 rounded-lg shadow-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -249,9 +249,9 @@ export function ReportForm({ defaultLat, defaultLng, onSuccess, onCancel, onLoca
       </div>
 
       {/* Location Section */}
-      <div className="neo-card p-4 space-y-3">
+      <div className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-lg p-4 space-y-3 shadow-sm">
         <div className="flex items-center justify-between">
-          <label className="font-bold text-black flex items-center gap-2">
+          <label className="font-semibold text-gray-700 flex items-center gap-2">
             <MapPin className="w-4 h-4" />
             Location
           </label>
@@ -259,7 +259,7 @@ export function ReportForm({ defaultLat, defaultLng, onSuccess, onCancel, onLoca
             type="button"
             onClick={handleGetMyLocation}
             disabled={loading}
-            className="neo-button bg-neo-purple text-white"
+            className="bg-purple-500 hover:bg-purple-600 text-white rounded-lg shadow-sm transition-all"
           >
             <Navigation className="w-4 h-4 mr-2" />
             Get My Location
@@ -267,9 +267,9 @@ export function ReportForm({ defaultLat, defaultLng, onSuccess, onCancel, onLoca
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-sm font-bold text-black">Latitude</label>
+            <label className="text-sm font-semibold text-gray-700">Latitude</label>
             <Input
-              className="neo-border-thick"
+              className="bg-white border-gray-200 rounded-lg shadow-sm"
               type="number"
               step="any"
               value={latitude}
@@ -278,9 +278,9 @@ export function ReportForm({ defaultLat, defaultLng, onSuccess, onCancel, onLoca
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-bold text-black">Longitude</label>
+            <label className="text-sm font-semibold text-gray-700">Longitude</label>
             <Input
-              className="neo-border-thick"
+              className="bg-white border-gray-200 rounded-lg shadow-sm"
               type="number"
               step="any"
               value={longitude}
@@ -296,13 +296,13 @@ export function ReportForm({ defaultLat, defaultLng, onSuccess, onCancel, onLoca
 
       {/* Auto-tagged Authorities */}
       {selectedAuthorities.length > 0 && (
-        <div className="neo-card p-4">
-          <label className="font-bold text-black mb-2 block">Tagged Authorities</label>
+        <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg p-4 shadow-sm">
+          <label className="font-semibold text-gray-700 mb-2 block">Tagged Authorities</label>
           <div className="flex flex-wrap gap-2">
             {selectedAuthorities.map((auth, index) => (
               <span
                 key={index}
-                className="neo-border-thick bg-neo-yellow px-3 py-1 text-xs font-bold text-black"
+                className="bg-yellow-100 text-yellow-800 px-3 py-1 text-xs font-medium rounded-md border border-yellow-200"
               >
                 {auth}
               </span>
@@ -315,7 +315,7 @@ export function ReportForm({ defaultLat, defaultLng, onSuccess, onCancel, onLoca
         <Button
           type="submit"
           disabled={loading}
-          className="neo-button bg-neo-green text-black font-bold flex-1"
+          className="bg-green-500 hover:bg-green-600 text-white font-semibold flex-1 rounded-lg shadow-sm transition-all"
         >
           {loading ? 'Submitting...' : 'Submit Report'}
         </Button>
@@ -323,7 +323,7 @@ export function ReportForm({ defaultLat, defaultLng, onSuccess, onCancel, onLoca
           <Button
             type="button"
             onClick={onCancel}
-            className="neo-button bg-gray-300 text-black font-bold"
+            className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-lg shadow-sm transition-all"
           >
             Cancel
           </Button>

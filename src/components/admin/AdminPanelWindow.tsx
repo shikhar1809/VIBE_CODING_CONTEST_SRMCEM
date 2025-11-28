@@ -1,184 +1,139 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Window } from '../os/Window';
 import { IssuesTable } from './IssuesTable';
-import { IssueDetails } from './IssueDetails';
 import { useIssues } from '../../hooks/useIssues';
-import { Issue, IssueStatus, IssueCategory, IssuePriority } from '../../types/issue';
-import { updateIssueStatus, assignIssue, deleteIssue } from '../../lib/issue-service';
-import { Button } from '../ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { categoryLabels } from '../../types/issue';
 import { useWindows } from '../../contexts/WindowContext';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { Loader2 } from 'lucide-react';
 
-interface AdminPanelWindowProps {
-  windowId: string;
-}
+const LOADING_MESSAGES = [
+  'Loading data...',
+  'Checking reports...',
+  'Analyzing issues...',
+  'Preparing dashboard...',
+];
 
-export function AdminPanelWindow({ windowId }: AdminPanelWindowProps) {
-  const { issues, loading, refetch } = useIssues();
-  const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
-  const [statusFilter, setStatusFilter] = useState<IssueStatus | 'all'>('all');
-  const [categoryFilter, setCategoryFilter] = useState<IssueCategory | 'all'>('all');
-  const [priorityFilter, setPriorityFilter] = useState<IssuePriority | 'all'>('all');
-  const { closeWindow } = useWindows();
+export function AdminPanelWindow() {
+  const { windows } = useWindows();
+  const windowState = windows.find(w => w.id === 'admin');
+  const { issues, loading, error, refetchIssues } = useIssues();
+  const [loadingMessage, setLoadingMessage] = useState(LOADING_MESSAGES[0]);
+  const [loadingStep, setLoadingStep] = useState(0);
 
-  const filteredIssues = useMemo(() => {
-    return issues.filter((issue) => {
-      if (statusFilter !== 'all' && issue.status !== statusFilter) return false;
-      if (categoryFilter !== 'all' && issue.category !== categoryFilter) return false;
-      if (priorityFilter !== 'all' && issue.priority !== priorityFilter) return false;
-      return true;
-    });
-  }, [issues, statusFilter, categoryFilter, priorityFilter]);
+  // Cycle through loading messages
+  useEffect(() => {
+    if (loading) {
+      const interval = setInterval(() => {
+        setLoadingStep((prev) => {
+          const next = (prev + 1) % LOADING_MESSAGES.length;
+          setLoadingMessage(LOADING_MESSAGES[next]);
+          return next;
+        });
+      }, 800); // Change message every 800ms
 
-  const handleStatusChange = async (issueId: string, status: IssueStatus) => {
-    try {
-      await updateIssueStatus(issueId, status);
-      refetch();
-      if (selectedIssue?.id === issueId) {
-        setSelectedIssue({ ...selectedIssue, status });
-      }
-    } catch (error) {
-      console.error('Failed to update status:', error);
-      alert('Failed to update status');
+      return () => clearInterval(interval);
+    } else {
+      setLoadingStep(0);
+      setLoadingMessage(LOADING_MESSAGES[0]);
     }
-  };
+  }, [loading]);
 
-  const handleAssign = async (issueId: string, assignedTo: string) => {
-    try {
-      await assignIssue(issueId, assignedTo);
-      refetch();
-      if (selectedIssue?.id === issueId) {
-        setSelectedIssue({ ...selectedIssue, assigned_to: assignedTo });
-      }
-    } catch (error) {
-      console.error('Failed to assign issue:', error);
-      alert('Failed to assign issue');
-    }
-  };
-
-  const handleDelete = async (issueId: string) => {
-    try {
-      await deleteIssue(issueId);
-      refetch();
-      if (selectedIssue?.id === issueId) {
-        setSelectedIssue(null);
-      }
-    } catch (error) {
-      console.error('Failed to delete issue:', error);
-      alert('Failed to delete issue');
-    }
-  };
-
-  const stats = useMemo(() => {
-    return {
-      total: issues.length,
-      pending: issues.filter(i => i.status === 'pending').length,
-      inProgress: issues.filter(i => i.status === 'in_progress').length,
-      resolved: issues.filter(i => i.status === 'resolved').length,
-      byCategory: Object.keys(categoryLabels).reduce((acc, cat) => {
-        acc[cat] = issues.filter(i => i.category === cat).length;
-        return acc;
-      }, {} as Record<string, number>),
-    };
-  }, [issues]);
+  if (!windowState || !windowState.isOpen) return null;
 
   return (
-    <Window id={windowId} title="Admin Panel - SynergyHub">
-      <div className="h-full flex flex-col p-4 space-y-4">
-        {/* Statistics */}
-        <div className="grid grid-cols-4 gap-4">
-          <div className="neo-card p-4">
-            <div className="text-sm font-bold text-gray-600">Total Issues</div>
-            <div className="text-2xl font-bold text-black">{stats.total}</div>
-          </div>
-          <div className="neo-card p-4 bg-neo-yellow">
-            <div className="text-sm font-bold text-black">Pending</div>
-            <div className="text-2xl font-bold text-black">{stats.pending}</div>
-          </div>
-          <div className="neo-card p-4 bg-neo-cyan">
-            <div className="text-sm font-bold text-black">In Progress</div>
-            <div className="text-2xl font-bold text-black">{stats.inProgress}</div>
-          </div>
-          <div className="neo-card p-4 bg-neo-green">
-            <div className="text-sm font-bold text-black">Resolved</div>
-            <div className="text-2xl font-bold text-black">{stats.resolved}</div>
-          </div>
+    <Window id="admin" title="Admin Panel" defaultWidth={1200} defaultHeight={800} defaultX={50} defaultY={50}>
+      <div className="h-full flex flex-col bg-gradient-to-br from-gray-50 to-white">
+        <div className="p-6 border-b border-gray-200 bg-white/80 backdrop-blur-sm">
+          <h2 className="text-2xl font-semibold text-gray-800">Smart City Issues Dashboard</h2>
+          <p className="text-sm text-gray-500 mt-1">Manage and monitor all reported issues</p>
         </div>
 
-        {/* Filters */}
-        <div className="flex gap-4">
-          <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as any)}>
-            <SelectTrigger className="neo-border-thick w-40">
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="in_progress">In Progress</SelectItem>
-              <SelectItem value="resolved">Resolved</SelectItem>
-            </SelectContent>
-          </Select>
+        <Tabs defaultValue="all-issues" className="flex-grow flex flex-col p-6">
+          <TabsList className="grid w-full max-w-md grid-cols-2 bg-gray-100/80 backdrop-blur-sm border border-gray-200 rounded-lg p-1">
+            <TabsTrigger 
+              value="all-issues" 
+              className="data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md transition-all"
+            >
+              All Issues
+            </TabsTrigger>
+            <TabsTrigger 
+              value="statistics" 
+              className="data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md transition-all"
+            >
+              Statistics
+            </TabsTrigger>
+          </TabsList>
 
-          <Select value={categoryFilter} onValueChange={(value) => setCategoryFilter(value as any)}>
-            <SelectTrigger className="neo-border-thick w-40">
-              <SelectValue placeholder="Filter by category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              {Object.entries(categoryLabels).map(([key, label]) => (
-                <SelectItem key={key} value={key}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <TabsContent value="all-issues" className="flex-grow mt-6 overflow-auto">
+            {loading ? (
+              <div className="flex flex-col items-center justify-center h-full space-y-4">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+                <p className="text-gray-600 font-medium animate-pulse">{loadingMessage}</p>
+                <div className="flex space-x-1">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                </div>
+              </div>
+            ) : error ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center p-6 bg-red-50 rounded-lg border border-red-200">
+                  <p className="text-red-600 font-medium">Error loading issues</p>
+                  <p className="text-sm text-red-500 mt-2">{error}</p>
+                  <button
+                    onClick={() => refetchIssues()}
+                    className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                  >
+                    Retry
+                  </button>
+                </div>
+              </div>
+            ) : issues.length === 0 ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center p-6">
+                  <p className="text-gray-500 font-medium">No issues reported yet</p>
+                  <p className="text-sm text-gray-400 mt-2">Issues will appear here once reported</p>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-gray-200 shadow-sm">
+                <IssuesTable issues={issues} onIssueClick={() => {}} onUpdateIssue={refetchIssues} />
+              </div>
+            )}
+          </TabsContent>
 
-          <Select value={priorityFilter} onValueChange={(value) => setPriorityFilter(value as any)}>
-            <SelectTrigger className="neo-border-thick w-40">
-              <SelectValue placeholder="Filter by priority" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Priorities</SelectItem>
-              <SelectItem value="low">Low</SelectItem>
-              <SelectItem value="medium">Medium</SelectItem>
-              <SelectItem value="high">High</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Button
-            onClick={refetch}
-            className="neo-button bg-neo-purple text-white ml-auto"
-          >
-            Refresh
-          </Button>
-        </div>
-
-        {/* Issues Table */}
-        <div className="flex-1 overflow-auto">
-          {loading ? (
-            <div className="flex items-center justify-center h-full">
-              <div className="font-bold text-black">Loading issues...</div>
+          <TabsContent value="statistics" className="flex-grow mt-6 overflow-auto">
+            <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-gray-200 shadow-sm p-6">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">Issue Statistics</h3>
+              {loading ? (
+                <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                  <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+                  <p className="text-gray-600 text-sm">{loadingMessage}</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
+                    <p className="text-sm text-blue-600 font-medium">Total Issues</p>
+                    <p className="text-3xl font-bold text-blue-700 mt-2">{issues.length}</p>
+                  </div>
+                  <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg p-4 border border-yellow-200">
+                    <p className="text-sm text-yellow-600 font-medium">Pending</p>
+                    <p className="text-3xl font-bold text-yellow-700 mt-2">
+                      {issues.filter(i => i.status === 'pending').length}
+                    </p>
+                  </div>
+                  <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4 border border-green-200">
+                    <p className="text-sm text-green-600 font-medium">Resolved</p>
+                    <p className="text-3xl font-bold text-green-700 mt-2">
+                      {issues.filter(i => i.status === 'resolved').length}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
-          ) : (
-            <IssuesTable
-              issues={filteredIssues}
-              onIssueClick={setSelectedIssue}
-            />
-          )}
-        </div>
+          </TabsContent>
+        </Tabs>
       </div>
-
-      {/* Issue Details Dialog */}
-      <IssueDetails
-        issue={selectedIssue}
-        open={!!selectedIssue}
-        onClose={() => setSelectedIssue(null)}
-        onStatusChange={handleStatusChange}
-        onAssign={handleAssign}
-        onDelete={handleDelete}
-      />
     </Window>
   );
 }
-

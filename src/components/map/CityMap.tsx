@@ -29,7 +29,11 @@ function MapController({ center, zoom }: { center: [number, number]; zoom: numbe
   const map = useMap();
   
   useEffect(() => {
-    map.setView(center, zoom);
+    // Smooth zoom and pan animation
+    map.flyTo(center, zoom, {
+      duration: 1.0, // Animation duration in seconds
+      easeLinearity: 0.25,
+    });
   }, [center, zoom, map]);
 
   return null;
